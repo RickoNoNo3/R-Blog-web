@@ -1,0 +1,20 @@
+<script>
+    var IsInClient = false;
+    function InClient() {
+        var myboxContent = document.querySelector('.mybox').innerHTML;
+        document.body.innerHTML = '<div class="mybox inclient">' + myboxContent + '</div>';
+        IsInClient = true;
+    }
+    window.onload = {$info.isSpecial ? 'new' : ''} function() {
+        if (!IsInClient) {
+            var BG = document.getElementById('BG');
+            BG.src = "{:config('blog.bg_img')}";
+        }
+    }
+</script>
+{if $info.isSpecial}
+<script src="/js/conSpecial.js"></script>
+{/if}
+<script src="/js/conBg.js"></script>
+<script src="/js/conNavLoc.js"></script>
+<script src="/js/conLogin.js"></script>

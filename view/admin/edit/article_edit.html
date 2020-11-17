@@ -1,0 +1,189 @@
+{include file='/admin/edit/edit_head_begin'}
+<link rel="stylesheet" href="{:config('blog.style_highlight')}">
+<script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .mycontent {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    #contentFrame {
+        flex: 1;
+        display: flex;
+        justify-content: stretch;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+
+    #contentFrame > div {
+        flex: 1;
+        position: relative;
+    }
+
+    #editor.ace-twilight,
+    #output {
+        background-color: rgba(18, 20, 10, 0.2);
+    }
+
+    #editor.ace_editor * {
+        font-size: unset;
+    }
+
+    #editor .ace_mobile-menu {
+        display: none;
+    }
+
+    #editor.ace-twilight .ace_gutter {
+        background-color: transparent;
+    }
+
+    #output {
+        padding: 5px;
+        overflow: auto;
+    }
+
+    @media all and (max-width: 700px) {
+        #contentFrame {
+            flex-direction: column;
+        }
+
+        #contentFrame > div {
+            width: 100%;
+        }
+
+        #output {
+            display: none;
+        }
+    }
+</style>
+{include file='/admin/edit/edit_head_end'}
+<body class="simple">
+<div class="mycontent">
+    <div>
+        <!-- toolBar -->
+        <ul id="toolBar" class="simple">
+            <li option="back" class="show">
+                <a class="button colorful"
+                   href="/admin/edit?type=1&id={$parentId}"
+                   style="background-color: #484848;">
+                    <i class="material-icons">reply</i><span>返回目录</span>
+                </a>
+            </li>
+            <li option="save" class="show"
+                onclick="save();">
+                <a class="button colorful" href="javascript:void(0);">
+                    <i class="material-icons">save</i><span>保存</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div id="contentFrame">
+        <div id="editor"></div>
+        <div id="output">
+            <img src="/img/wait.gif" alt="正在加载中..."
+                 style="position: absolute; right: 5px; top: 5px; opacity: 0;"/>
+            <div></div>
+        </div>
+    </div>
+</div>
+</body>
+
+{// 编辑器和自动刷新相关}
+<script>
+    var editor = ace.edit("editor");
+    var output = $('#output>div');
+    var waitAni = $('#output>img');
+    var lastValue = '';
+    editor.setOptions({
+        "theme": "ace/theme/twilight",
+        "mode": "ace/mode/latex",
+        "keyboardHandler": "{$isMobile ? 'ace/keyboard/sublime' : 'ace/keyboard/vim'}",
+        "fontSize": "20px",
+        "useSoftTabs": false,
+        "wrap": "free",
+        "useTextareaForIME": true,
+        "showPrintMargin": false,
+        "animateScrolling": true,
+    });
+
+    function refresh() {
+        var value = editor.getValue().trim();
+        if (value !== lastValue) {
+            waitAni.fadeTo(50, 1);
+            BlogPage.Ajax.call(
+                '/api.core/drawCore',
+                value,
+                function (res) {
+                    if (output.html() !== res['text'])
+                        output.html(res['text']);
+                },
+                function () {
+                    // do nothing when error.
+                },
+                function () {
+                    waitAni.fadeTo(50, 0);
+                    lastValue = value;
+                    setTimeout(refresh, 10);
+                }
+            );
+        } else {
+            setTimeout(refresh, 500);
+        }
+    }
+
+    setTimeout(refresh, 1000);
+</script>
+
+{//不是mobile的话, 直接给焦点, mobile不能给因为会唤不醒输入法}
+{if !$isMobile}
+<script>
+    $('.ace_text-input').focus();
+</script>
+{/if}
+
+{//编辑现有文章}
+{if $id != -1}
+<script>
+    function save() {
+        BlogPage.Ajax.call(
+            '/api.core/edit?type=0&id={$id}',
+            editor.getValue().trim(),
+            function () {
+                location.href = '/admin/edit?type=1&id={$parentId}';
+            },
+        )
+    }
+
+    // 获取文章(获取结束后再显示输入框)
+    $('#editor').fadeTo(0, 0);
+    BlogPage.Ajax.call(
+        '/api.core/drag?id={$id}', null, function (res) {
+            editor.insert(res['text']);
+        }, null, function () {
+            $('#editor').fadeTo(100, 1);
+        }
+    )
+</script>
+{//新建文章}
+{else /}
+<script>
+    function save() {
+        BlogPage.Ajax.call(
+            '/api.core/new?type=0&dirId={$parentId}',
+            editor.getValue().trim(),
+            function () {
+                location.href = '/admin/edit?type=1&id={$parentId}';
+            },
+        )
+    }
+</script>
+{/if}
+</html>

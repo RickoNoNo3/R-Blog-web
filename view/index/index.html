@@ -1,0 +1,47 @@
+{/* 参数一览:
+$info 主要由global使用
+$intro 开屏介绍博文
+*/}
+{include file="global/head_begin"}
+<style>
+    .welcometitle {
+        color: rgb(255, 255, 230);
+        margin: 0 auto 20px;
+        font-size: 30px;
+        height: 40px;
+        text-align: center;
+        filter: drop-shadow(0 0 5px black) drop-shadow(0 0 8px grey);
+    }
+
+    .welcomebox1 {
+        width: 50%;
+        margin: 20px 0 20px 10%;
+        float: left;
+    }
+
+    .welcomebox2 {
+        position: fixed;
+        width: 25%;
+        margin: 20px 10% 20px 5%;
+        right: 0;
+        top: 60;
+    }
+
+    .welcomebox3 {
+        width: 5%;
+        margin: 20px 10% 20px 5%;
+        float: right;
+        text-align: center;
+    }
+</style>
+{include file="global/head_end"}
+{include file="global/body_begin"}
+<div class="welcometitle">欢迎来到R崽的博客</div>
+<div class="mybox {$info.isMobile ? '' : 'welcomebox1' }">
+	<div class="mycontent">
+		{$intro|raw}
+	</div>
+</div>
+{include file="global/body_end"}
+{include file="global/script_begin"}
+{include file="global/script_end"}

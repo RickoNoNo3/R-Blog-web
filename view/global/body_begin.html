@@ -1,0 +1,29 @@
+<body ismobile="{$info.isMobile ? 'true' : 'false'}">
+	<div class="mynav" style="display: none;">
+		<div class="mynavline">
+			<ul class="mymenubar">
+				<li class="mymenuli"><a href="/">主页</a></li>
+				<li class="mymenuli"><a href="/blog/">博客</a></li>
+				<li class="mymenuli"><a href="/about/">关于</a></li>
+				<?php if(app\helper\AdminHelper::checkPswd()) : ?>
+				<li class="mymenuli"><a href="/admin/">管理</a></li>
+				<?php endif; ?>
+			</ul>
+		</div>
+		<div class="mynavicon">
+			<a href="https://www.cnblogs.com/rickonono3" style="opacity: 0;"></a>
+		</div>
+	</div>
+	<script>
+		var menus = document.querySelectorAll('.mymenuli:not(.disabled)');
+		var menuCnt = menus.length;
+		document.querySelector('.mynav').style.display = 'block';
+	</script>
+	<div class="myloc" style="opacity: 0;">
+		<div class="mylocbar {$info.isSpecial ? 'edge' : 'normal'}" id="locbar">
+			<div class="mylocbarEX"></div>
+			<span id="loclink">
+				{$info.loc|raw}
+			</span>
+		</div>
+	</div>

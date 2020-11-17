@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=0.5,maximum-scale=3.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="author" content="RickoNoNo3,RickoNoNo3@163.com">
+    <meta name="copyright" content="RickoNoNo3">
+    <title>{$title}(管理员)</title>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <link href="/css/material-icons.css" rel="stylesheet">
+    <link href="{:config('blog.style')}" rel="stylesheet">
+    {if $isMobile}
+    <link href="{:config('blog.style_mobile')}" rel="stylesheet">
+    {/if}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        #BG {
+            top: auto;
+            bottom: 0;
+        }
+
+        #optionList {
+            flex: none;
+            position: relative;
+            width: 200px;
+            transition: width 500ms ease-in-out;
+        }
+
+        #optionList > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 200px;
+            height: 100%;
+            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            transition: width 500ms ease-in-out;
+        }
+
+        #optionList > div > ul > li > a {
+            width: 100%;
+            padding: 5px 20px 5px 27px;
+        }
+
+        #optionList > div > ul > li > a > span {
+            transition: opacity 500ms;
+        }
+
+        #optionList > #toggle {
+            position: absolute;
+            top: 20px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: rotate(45deg);
+        }
+
+        #optionList > #toggle > i {
+            margin-left: 1px;
+            transform: rotate(-45deg);
+        }
+
+        #optionFrame {
+            flex: 1;
+            margin: 15px;
+            height: calc(100% - 30px);
+        }
+    </style>
+    {if $isMobile}
+    <style>
+        #optionFrame {
+            margin: 0;
+            height: 100%;
+        }
+
+        #toggle {
+            display: none;
+        }
+
+        #optionList, #optionList > div {
+            width: 50px;
+        }
+
+        #optionList > div > a {
+            display: none;
+        }
+
+        #optionList > div > ul > li > a {
+            width: 50px;
+            height: 50px;
+            padding: 10px;
+        }
+
+        #optionList > div > ul > li > a > i {
+            margin-left: 0;
+            font-size: 30px !important;
+        }
+
+        #optionList > div > ul > li > a > span {
+            opacity: 0;
+        }
+    </style>
+    {/if}
+</head>
+<body class="simple">
+<div style="display: flex; height: 100%">
+    <div id="optionList" class="mybox simple no-before">
+        <a id="toggle" href="javascript:void(0);" onclick="toggleOptionList();">
+            <i class="material-icons">chevron_left</i>
+        </a>
+        <div>
+            <a href="/" title="返回主页"><img src="/favicon.ico" style="width: 50px; height: 50px; margin: 4px auto;"/></a>
+            <ul class="simple">
+                <li option="edit"><a class="button colorless" href="javascript:void(0);" title="整理博客文章、目录和文件">
+                    <i class="material-icons">edit</i><span>博客</span>
+                </a></li>
+                <li option="about"><a class="button colorless" href="javascript:void(0);" title="编辑个人简介和关于信息">
+                    <i class="material-icons">help_outline</i><span>简介</span>
+                </a></li>
+                <li no-option="1"><a class="button colorless" href="/" title="返回主页">
+                    <i class="material-icons">reply_all</i><span>返回主页</span>
+                </a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="optionFrame" class="mybox simple">
+        <iframe src="" style="border: 0; width: 100%; height: 100%;"></iframe>
+    </div>
+</div>
+<img id="BG" alt="" src="{:config('blog.bg_img')}"/>
+</body>
+<script>
+    var BG = document.getElementById('BG');
+    var currentOption = '{$option}', queryString = '{$queryString|raw}';
+    var optionList = $('#optionList');
+    var optionListDiv = $('#optionList>div');
+    var optionElement = $('#optionList>div>ul>li:not([no-option])');
+    var optionText = $('#optionList>div>ul>li>a>span');
+    var optionIframe = $('#optionFrame>iframe');
+    var toggleIcon = $('#optionList>#toggle>i');
+    var toggleState = {$isMobile ? 'false' : 'true'}, inToggle = false;
+
+    $(document).ready(function () {
+        // ----- BG -----
+        BG.style.opacity = "0.7";
+        // ----- options -----
+        optionElement.click(function () {
+            optionElement.children('a').removeAttr('active');
+            $(this).children('a').attr('active', '1');
+            optionIframe.attr('src', '/admin/' + $(this).attr('option') + queryString);
+            queryString = "";
+        });
+        optionElement.siblings('[option=' + currentOption + ']').click();
+    });
+
+    function toggleOptionList() {
+        if (inToggle) return false;
+        inToggle = true;
+        if (toggleState) {
+            optionListDiv.css('width', '70px');
+            optionList.css('width', '70px');
+            optionText.css('opacity', '0');
+            setTimeout(() => {
+                toggleIcon.text('chevron_right');
+            }, 500);
+        } else {
+            optionList.css('width', '200px');
+            optionListDiv.css('width', '200px');
+            optionText.css('opacity', '1');
+            setTimeout(() => {
+                toggleIcon.text('chevron_left');
+            }, 500);
+        }
+        toggleState = !toggleState;
+        inToggle = false;
+    }
+</script>
+</html>

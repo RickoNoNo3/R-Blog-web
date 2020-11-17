@@ -1,0 +1,292 @@
+{include file='/admin/edit/edit_head_begin'}
+<style>
+    .mycontent {
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-bottom: 10px;
+    }
+
+    .checkbox-d {
+        width: 30px;
+        text-align: center;
+        color: #DCDCDC !important;
+    }
+
+    .checkbox-d > i {
+        margin: 0 1vw;
+        font-size: 22px !important;
+    }
+
+    .name-d {
+        padding: 5px 2px;
+    }
+
+    .option-d {
+        padding-left: 3px;
+        text-align: right;
+        word-break: keep-all;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 200ms ease-in;
+    }
+
+    .list-r:hover .option-d {
+        opacity: 1;
+    }
+
+    .option-d > .button {
+        color: #DCDCDC;
+        display: inline-flex;
+        width: 70px;
+        padding: 0 7px 0 12px;
+        overflow: hidden;
+    }
+</style>
+{if $isMobile}
+<style>
+    .checkbox-d > i {
+        margin: 0 2px;
+    }
+
+    .option-d {
+        opacity: 1 !important;
+        width: 72px;
+        padding-right: 2px;
+    }
+
+    .option-d > .button {
+        width: 20px;
+        padding: 2px;
+    }
+</style>
+{/if}
+{include file='/admin/edit/edit_head_end'}
+<body class="simple">
+<div class="mycontent">
+    <h1>{$dir->title}</h1>
+    <!-- toolBar -->
+    <ul id="toolBar" class="simple">
+        <li option="back" class="{$dir->id !== 0 ? 'show' : ''}">
+            <a class="button colorful"
+               href="/admin/edit?type=1&id={$parentId}"
+               style="background-color: #484848;">
+                <i class="material-icons">reply</i><span>返回上级</span>
+            </a>
+        </li>
+        <li option="articleNew" class="show"
+            onclick="articleNew();">
+            <a class="button colorful" href="javascript:void(0);">
+                <i class="material-icons">note_add</i><span>新文章</span>
+            </a>
+        </li>
+        <li option="dirNew" class="show"
+            onclick="dirNew();">
+            <a class="button colorful" href="javascript:void(0);">
+                <i class="material-icons">create_new_folder</i><span>新目录</span>
+            </a>
+        </li>
+        <li option="move" class=""
+            onclick="moveList();">
+            <a class="button colorful" href="javascript:void(0);">
+                <i class="material-icons">archive</i><span>移动</span>
+            </a>
+        </li>
+        <li option="remove" class=""
+            onclick="removeList();">
+            <a class="button colorful" href="javascript:void(0);"
+               style="background-color: #7D4B25;">
+                <i class="material-icons">delete_forever</i><span>删除</span>
+            </a>
+        </li>
+    </ul>
+    <!-- list -->
+    {if count($dir->list) > 0}
+    <div class="list" style="margin-top: 10px;">
+        {//从这里开始进入dir的list数组的遍历, 遍历对象名叫vo}
+        {foreach $dir->list as $i=>$vo}
+        <div entity-type="{$vo.type}" entity-id="{$vo.id}" class="list-r {$i % 2 ? 'leven' : 'lodd'}">
+            <!-- icon -->
+            <a class="list-d checkbox-d" href="javascript:void(0);"
+               onclick="toggleSelect({$vo.type}, {$vo.id});">
+                <i class="material-icons">check_box_outline_blank</i>
+            </a>
+            <!-- name -->
+            <a class="list-d name-d" href="javascript:void(0);"
+               onclick="{$vo.type === 1 ? 'dirJump' : 'articleJump'}({$vo.id});">
+                <div class="list-d-container">
+                    <i class="material-icons">{:config("blog.icons")[$vo.type]}</i>
+                    <span>{$vo.text}</span>
+                </div>
+            </a>
+            <!-- option -->
+            <div class="list-d option-d">
+                <a option="edit" class="button colorless" href="javascript:void(0);"
+                   onclick="{$vo.type === 1 ? 'dirEdit' : 'articleEdit'}({$vo.id});">
+                    <i class="material-icons">edit</i><span>编辑</span>
+                </a><a option="move" class="button colorless" href="javascript:void(0);"
+                   onclick="moveOne({$vo.type}, {$vo.id});">
+                    <i class="material-icons">archive</i><span>移动</span>
+                </a><a option="remove" class="button colorless" href="javascript:void(0);"
+                   onclick="removeOne({$vo.type}, {$vo.id});">
+                    <i class="material-icons">delete_forever</i><span>删除</span>
+                </a>
+            </div>
+        </div>
+        {/foreach}
+    </div>
+    {else /}
+    <div class="notice">该目录下暂无内容</div>
+    {/if}
+</div>
+</body>
+<script>
+    /**
+     * 对某个实体进行选中/不选中的控制
+     * @param type
+     * @param id
+     */
+    function toggleSelect(type, id) {
+        var ele = $('.list>.list-r[entity-type=' + type + '][entity-id=' + id + ']');
+        var icon = ele.find('.checkbox-d>i');
+        // 动画, 等待延迟
+        icon.fadeOut(50, function () {
+            // 改checkbox
+            if (typeof ele.attr('checked') !== 'undefined') {
+                icon.text('check_box_outline_blank');
+                ele.removeAttr('checked');
+            } else {
+                icon.text('check_box');
+                ele.attr('checked', '1');
+            }
+            // 动画, 等待延迟
+            icon.fadeIn(200);
+            // 改toolBar
+            if (getSelectList().length === 0) {
+                $('#toolBar>li[option=move], #toolBar>li[option=remove]').removeClass('show');
+            } else {
+                $('#toolBar>li[option=move], #toolBar>li[option=remove]').addClass('show');
+            }
+        });
+    }
+
+    /**
+     * 获取现在已选中的.list-r的名单(JQ对象)
+     */
+    function getSelectList() {
+        return $('.list>.list-r[checked]')
+    }
+
+    /**
+     * 获取现在已选中的.list-r的名单(多行type-id对)
+     */
+    function getSelectListData() {
+        var list = getSelectList();
+        var data = '';
+        if (!list || list.length === 0) return '';
+        list.each(function () {
+            var ele = $(this);
+            data += ele.attr('entity-type') + ' ' + ele.attr('entity-id') + '\n';
+        });
+        return data;
+    }
+
+    // 跳转到深一层的目录编辑页面
+    function dirJump(id) {
+        location.href = '/admin/edit?type=1&id=' + id;
+    }
+
+    // 直接跳转到前台文章页面(算作是预览吧)
+    // 注意dirJump是还保留在管理端, articleJump是直接开新标签页跳到前台
+    function articleJump(id) {
+        window.open('/blog/article/' + id, '_blank');
+    }
+
+    // --------------------------------
+    // 新建和编辑
+    //
+    // 新建目录
+    // dirNew  ----+
+    //             |-> dirNew_dirEdit_inner -> openAsInput -> call
+    // 编辑目录    |
+    // dirEdit ----+
+    //
+    // 新建文章
+    // articleNew -> location.href
+    //
+    // 编辑文章
+    // articleEdit -> location.href
+    //
+
+    function dirNew_dirEdit_inner(id, url, text = null) {
+        BlogPage.PopWindow.openAsInput(id, '输入目录名', 'text', text, function (data) {
+            if (data.trim() === '') {
+                BlogPage.PopWindow.openAsNote(id + 'Fail', '失败', '目录名无效!');
+            } else {
+                data = data.trim();
+                BlogPage.Ajax.call('/api.core' + url, data);
+            }
+        });
+    }
+
+    function dirNew() {
+        dirNew_dirEdit_inner('dirNew', '/new?type=1&dirId={$dir->id}');
+    }
+
+    function dirEdit(id) {
+        var ele = $('.list>.list-r[entity-type=1][entity-id=' + id + '] .name-d i+span');
+        dirNew_dirEdit_inner('dirEdit', '/edit?type=1&id=' + id, ele.text());
+    }
+
+    function articleNew() {
+        location.href = '/admin/edit?type=0&id=-1&parentId={$dir->id}';
+    }
+
+    function articleEdit(id) {
+        location.href = '/admin/edit?type=0&id=' + id;
+    }
+
+    // --------------------------------
+    // 删除和移动
+    //
+    // entity删除
+    // removeOne  -----+
+    //                 |-> remove_inner -> openAsNote -> call
+    // 选中项删除      |
+    // removeList -----+
+    //
+    // entity移动
+    // moveOne    -----+
+    //                 |-> move_inner -> openAsDirSelector -> call
+    // 选中项移动      |
+    // moveList   -----+
+    //
+
+    function remove_inner(data) {
+        BlogPage.PopWindow.openAsNote('remove', '确认删除', '删除操作是永久的<br/>删除目录会连同所有内容一并删除!', function () {
+            BlogPage.Ajax.call('/api.core/remove', data);
+        });
+    }
+
+    function removeOne(type, id) {
+        remove_inner(type + ' ' + id);
+    }
+
+    function removeList() {
+        remove_inner(getSelectListData());
+    }
+
+    function move_inner(data) {
+        BlogPage.PopWindow.openAsDirSelector(function (dirId) {
+            BlogPage.Ajax.call('/api.core/move?dirId=' + dirId, data);
+        });
+    }
+
+    function moveOne(type, id) {
+        move_inner(type + ' ' + id);
+    }
+
+    function moveList() {
+        move_inner(getSelectListData());
+    }
+</script>
+</html>

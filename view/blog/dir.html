@@ -1,12 +1,59 @@
+{/* 参数一览:
+$info 主要由global使用
+$dir 目录对象
+*/}
 {include file='global/head_begin'}
-<script src="/js/highlight/highlight.pack.js"></script>
-<link rel="stylesheet" href="{:config('style_highlight')}">
-<meta name="keywords" content="{$entity->title},R崽的博客">
-<meta name="description" content="{$entity->title}">
+<meta name="keywords" content="{$dir->title},R崽的博客,文章列表">
+<meta name="description" content="'{$dir->title}'目录下的文章列表, R崽的博客.">
+<style>
+    .list>.list-r{
+		height: 30px;
+		line-height: 30px;
+	}
+	.list>.list-r>.name{
+		text-align: left;
+		padding-left: 1vw;
+	}
+	.list>.list-r>.name>i{
+		display: block;
+		position: absolute;
+		line-height: 33px;
+		left: 1vw;
+	}
+	.list>.list-r>.time{
+		font-family: monospace;
+		text-align: right;
+		padding-right: 1vw;
+		word-wrap: normal;
+		word-break: keep-all;
+		white-space: nowrap;
+	}
+</style>
 {include file='global/head_end'}
 {include file='global/body_begin'}
 <div class="mybox" id="box">
 	<div class="mycontent" id="content">
+		<h1>文章列表</h1>
+		{if count($dir->list) > 0}
+			<div class="list">
+			{foreach $dir->list as $i=>$vo}
+				<a class="list-r {$i % 2 ? 'leven' : 'lodd'}"
+				   href="/blog/{$vo.type === 1 ? 'dir' : 'article'}/{$vo.id}">
+					<span class="list-d name">
+						<div class="list-d-container">
+							<i class="material-icons">{:config("blog.icons")[$vo.type]}</i>
+							<span>{$vo.text}</span>
+						</div>
+					</span>
+					<span class="list-d time">
+						{:app\\helper\\DateTimeHelper::timeTrans($vo.modifiedT, 'Y-m-d')}
+					</span>
+				</a>
+			{/foreach}
+			</div>
+		{else /}
+			<div class="notice">该目录下暂无内容</div>
+		{/if}
 	</div>
 </div>
 {include file='global/body_end'}

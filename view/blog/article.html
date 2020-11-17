@@ -1,0 +1,29 @@
+{/* 参数一览:
+$info 主要由global使用
+$article 文章对象
+*/}
+{include file='global/head_begin'}
+<link rel="stylesheet" href="{:config('blog.style_highlight')}">
+<meta name="keywords" content="{$article->title},R崽的博客">
+<meta name="description" content="{$article->title}">
+{include file='global/head_end'}
+{include file='global/body_begin'}
+<div class="mybox" id="box">
+	<article class="mycontent" id="content">
+		<!--<div id="infomation">
+			创建时间: {:app\\helper\\DateTimeHelper::timeTrans($article->createdT)} &nbsp;
+			修改时间: {:app\\helper\\DateTimeHelper::timeTrans($article->modifiedT)}
+		</div>-->
+		{$article->html|raw}
+	</article>
+</div>
+<script>
+	// TODO: 上传新版本
+
+	// TODO: 文章索引链接功能架设
+
+	// TODO: 关于页及相关编辑功能架设
+</script>
+{include file='global/body_end'}
+{include file='global/script_begin'}
+{include file='global/script_end'}
