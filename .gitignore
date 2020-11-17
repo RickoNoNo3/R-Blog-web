@@ -2,5 +2,6 @@
 /.vscode
 /.run
 *.log
+.*.swp
 .example.env
 .htaccess
