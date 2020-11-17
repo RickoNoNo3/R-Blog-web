@@ -1,0 +1,39 @@
+{/* 参数一览:
+$info 主要由global使用
+*/}
+{include file='global/head_begin'}
+<meta name="keywords" content="R崽的博客">
+<meta name="description" content="R崽的博客">
+<style>
+    body{
+        text-align: center;
+    }
+    #icon1{
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+    }
+    #title{
+        color: rgb(255,255,230);
+        margin: 0 auto 10px auto;
+        font-size: 30px;
+        height: 40px;
+        text-align: center;
+        filter: drop-shadow(0 0 5px black);
+        flex: 1;
+    }
+    #goHome{
+        color: yellow;
+        font-size: 20px;
+    }
+</style>
+{include file='global/head_end'}
+{include file='global/body_begin'}
+<img id="icon1" src="/img/icon.png"/>
+<div id="title">
+    页面走丢了哦<br />
+    <a id="goHome" href="/" target="_top">返回主页</a>
+</div>
+{include file='global/body_end'}
+{include file='global/script_begin'}
+{include file='global/script_end'}

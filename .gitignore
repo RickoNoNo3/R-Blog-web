@@ -1,0 +1,6 @@
+/.idea
+/.vscode
+/.run
+*.log
+.example.env
+.htaccess
