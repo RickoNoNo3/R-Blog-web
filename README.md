@@ -26,11 +26,11 @@ R-Blog的Web服务器封装. 要求环境为php7.4+.
 
 1. 安装php7.4+和composer
 
-2. 在项目根目录执行`composer update`
+2. 在项目根目录执行`composer update`
 
 3. 酌情修改配置文件(`config/blog.php`)
 
-4. 在项目根目录执行`php think run [-p <port>]`, 即可启动服务器
+4. 在项目根目录执行`blog-web.sh/.bat`, 即可启动服务器
 
 ## 版本对照
 
