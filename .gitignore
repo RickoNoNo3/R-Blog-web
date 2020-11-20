@@ -3,5 +3,6 @@
 /.run
 *.log
 .*.swp
+*.swp
 .example.env
 .htaccess

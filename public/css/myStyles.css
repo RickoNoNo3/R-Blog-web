@@ -188,6 +188,9 @@ input, input:focus {
 
 /* code全局属性 包含hljs */
 code, code * {
+    tab-size: 2;
+    -moz-tab-size: 2;
+    -webkit-tab-size: 2;
     font-size: 17px !important;
     display: inline-block;
     font-family: 'Sarasa Term SC', 'Consolas', 'Courier New', monospace;
