@@ -6,6 +6,9 @@
 $blog_core_loc = "C:/Users/rick/Programs/0.go/blog/built/blog_core/blog.exe";
 $CDN = '/';
 return [
+	// 内容分发
+	'cdn'             => $CDN,
+
     // 页面样式
     'title'           => "R崽的博客",
     'style'           => $CDN . 'css/myStyles.css',

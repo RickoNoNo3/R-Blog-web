@@ -10,9 +10,9 @@
 	<meta name="copyright" content="RickoNoNo3">
 	<meta name="google-site-verification" content="H8OLMgsMa9HVIHDya6fmpU3aeLh0NH56MTuqc1qKvpM">
 	<title>{$info.title}</title>
-	<script src="/js/jquery-3.4.1.min.js"></script>
-	<script src="/js/blogPage.js"></script>
-	<link href="/css/material-icons.css" rel="stylesheet">
+	<script src="{:config('blog.cdn')}js/jquery-3.4.1.min.js"></script>
+	<script src="{:config('blog.cdn')}js/blogPage.js"></script>
+	<link href="{:config('blog.cdn')}css/material-icons.css" rel="stylesheet">
 	<link rel="stylesheet" href="{:config('blog.style')}">
 	{if $info.isMobile}
 	<link rel="stylesheet" href="{:config('blog.style_mobile')}">

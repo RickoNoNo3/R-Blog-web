@@ -1,6 +1,6 @@
 {include file='/admin/edit/edit_head_begin'}
 <link rel="stylesheet" href="{:config('blog.style_highlight')}">
-<script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="{:config('blog.cdn')}js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <style>
     body {
         display: flex;
@@ -88,7 +88,7 @@
     <div id="contentFrame">
         <div id="editor"></div>
         <div id="output">
-            <img src="/img/wait.gif" alt="正在加载中..."
+            <img src="{:config('blog.cdn')}img/wait.gif" alt="正在加载中..."
                  style="position: absolute; right: 5px; top: 5px; opacity: 0;"/>
             <div></div>
         </div>
