@@ -4,13 +4,14 @@
 // +----------------------------------------------------------------------
 
 $blog_core_loc = "C:/Users/rick/Programs/0.go/blog/built/blog_core/blog.exe";
+$CDN = '/';
 return [
     // 页面样式
     'title'           => "R崽的博客",
-    'style'           => '/css/myStyles.css',
-    'style_mobile'    => '/css/myStyles.mob.css',
-    'style_highlight' => '/css/highlight/darcula.my.css',
-    'bg_img'          => '/img/bg.jpg',
+    'style'           => $CDN . 'css/myStyles.css',
+    'style_mobile'    => $CDN . 'css/myStyles.mob.css',
+    'style_highlight' => $CDN . 'css/highlight/darcula.my.css',
+    'bg_img'          => $CDN . 'img/bg.jpg',
     'icons'           => [
         0 => 'description',
         1 => 'folder',
